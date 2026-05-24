@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ICE Defense: Minneapolis</title>
     <style>
-        /* Base page styling */
+ /* Base page styling */
         body {
             background-color: #000000;
             color: #FFFF00; /* Neon Yellow */
@@ -15,7 +15,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* Aligns content from the top down naturally */
+            justify-content: flex-start; 
             min-height: 100vh;
             box-sizing: border-box;
             overflow: hidden; /* Prevents the main page from scrolling completely */
@@ -34,17 +34,17 @@
         /* Layout wrapper - holds the entire row together */
         .game-layout {
             display: flex;
-            align-items: center; /* Forces the buttons to line up exactly with the center of the iframe box */
+            align-items: center; 
             justify-content: center;
             gap: 50px;
             width: 100%;
             max-width: 1200px;
-            margin-top: 10px; /* Optional spacing below the header */
+            margin-top: 10px; 
         }
 
-        /* Side columns for the buttons - keeps spacing equal on both sides */
+        /* Side columns for the buttons */
         .side-panel {
-            width: 220px; /* Fixed width prevents layout shifting */
+            width: 220px; 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -70,21 +70,25 @@
             transform: scale(1.05);
         }
 
-        /* Container locked strictly to your exact Code.org specs */
+        /* Container acts as a strict window frame */
         .iframe-container {
             width: 440px;
-            height: 700px;
+            height: 710px; /* Shortened to hide the footer */
             box-shadow: 0 0 25px rgba(255, 255, 0, 0.25);
             border-radius: 4px;
-            overflow: hidden;
+            overflow: hidden; /* Cuts off anything pushing past the 710px height */
             background: #111;
-            display: flex;
+            position: relative; /* Allows child items to position absolutely */
         }
 
-        /* Forces iframe to fill the container layout border perfectly */
+        /* Forces iframe to size correctly and offsets it slightly */
         .iframe-container iframe {
-            width: 100%;
-            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 440px;
+            height: 757px; /* Native frame size */
+            border: 0px;
         }
 
         /* --- CONTROLS OVERLAY SCREEN (MODAL) --- */
@@ -120,18 +124,10 @@
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
         }
 
-        /* Stacking layout nicely on small screens */
         @media (max-width: 950px) {
-            body {
-                overflow-y: auto; /* Allow scrolling on smaller screens if items stack */
-            }
-            .game-layout {
-                flex-direction: column;
-                gap: 25px;
-            }
-            .side-panel {
-                width: auto;
-            }
+            body { overflow-y: auto; }
+            .game-layout { flex-direction: column; gap: 25px; }
+            .side-panel { width: auto; }
         }
     </style>
 </head>
