@@ -1,139 +1,134 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ICE Defense: Minneapolis</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
-    <script src="gamelab-api.js"></script>
-    <link href="gamelab.css" rel="stylesheet" type="text/css">
-    <script src="p5.js"></script>
-    <script src="p5.play.js"></script>
-    <script src="code.js"></script>
     <style>
-      /* --- MANDATORY GAME LAB CANVAS OVERRIDES --- */
-      html, body {
-        background-color: #000000 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 100vw !important;
-        height: 100vh !important;
-        overflow: hidden !important;
-        position: static !important; /* Overrides Code.org's position:fixed bug */
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: flex-start !important;
-        font-family: 'Arial Black', Gadget, sans-serif;
-        color: #FFFF00;
-      }
+        /* Base page styling */
+        body {
+            background-color: #000000;
+            color: #FFFF00; /* Neon Yellow */
+            font-family: 'Arial Black', Gadget, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; 
+            min-height: 100vh;
+            box-sizing: border-box;
+            overflow: hidden; /* Prevents the main page from scrolling completely */
+        }
 
-      /* Game Title Header */
-      h1 {
-        font-size: 2.5rem;
-        margin-top: 30px;
-        margin-bottom: 20px;
-        text-align: center;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        z-index: 10;
-      }
+        /* Title styling */
+        h1 {
+            font-size: 2.5rem;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-      /* Horizontal Flex Row wrapping everything */
-      .game-layout {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 50px;
-        width: 100%;
-        max-width: 1100px;
-        z-index: 10;
-      }
+        /* Layout wrapper - holds the entire row together */
+        .game-layout {
+            display: flex;
+            align-items: center; 
+            justify-content: center;
+            gap: 50px;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 10px; 
+        }
 
-      /* Side columns holding your buttons stable */
-      .side-panel {
-        width: 220px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
+        /* Side columns for the buttons */
+        .side-panel {
+            width: 220px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-      /* Neon Yellow Arcade Buttons */
-      .btn {
-        background-color: #FFFF00;
-        color: #000000;
-        border: none;
-        padding: 14px 32px;
-        font-size: 1rem;
-        font-weight: bold;
-        cursor: pointer;
-        text-transform: uppercase;
-        transition: transform 0.1s ease, background-color 0.2s ease;
-        white-space: nowrap;
-        box-shadow: 0 4px 10px rgba(255, 255, 0, 0.2);
-      }
+        /* Button styling matching the neon yellow block look */
+        .btn {
+            background-color: #FFFF00;
+            color: #000000;
+            border: none;
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: transform 0.1s ease, background-color 0.2s ease;
+            white-space: nowrap; 
+            box-shadow: 0 4px 10px rgba(255, 255, 0, 0.1);
+        }
 
-      .btn:hover {
-        background-color: #e6e600;
-        transform: scale(1.05);
-      }
+        .btn:hover {
+            background-color: #e6e600;
+            transform: scale(1.05);
+        }
 
-      /* Native Game Sketch Container Wrapper */
-      #sketch.web {
-        display: block !important;
-        position: relative !important;
-        top: 0 !important;
-        left: 0 !important;
-        transform: none !important;
-        width: 400px !important;
-        height: 565px !important;
-        box-shadow: 0 0 25px rgba(255, 255, 0, 0.25);
-        border-radius: 4px;
-        background-color: #111 !important;
-      }
+        /* Container acts as a strict window frame */
+        .iframe-container {
+            width: 440px;
+            height: 757px; /* Matches the code.org native height specs */
+            box-shadow: 0 0 25px rgba(255, 255, 0, 0.25);
+            border-radius: 4px;
+            overflow: hidden;
+            background: #111;
+            display: flex;
+        }
 
-      /* --- CONTROLS OVERLAY POPUP MODAL --- */
-      .modal-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-color: rgba(0, 0, 0, 0.95);
-        z-index: 2000;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-        box-sizing: border-box;
-      }
+        /* Forces iframe to size correctly inside the alignment row */
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: 0px;
+        }
 
-      .modal-content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-        max-width: 100%;
-      }
+        /* --- CONTROLS OVERLAY SCREEN (MODAL) --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
 
-      .controls-image {
-        width: 100%;
-        max-width: 1000px;
-        height: auto;
-        border-radius: 8px;
-        box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-      }
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            max-width: 100%;
+        }
 
-      /* Mobile Stacking Safe Fallback */
-      @media (max-width: 950px) {
-        html, body { overflow-y: auto !important; }
-        .game-layout { flex-direction: column; gap: 25px; }
-        .side-panel { width: auto; }
-      }
+        .controls-image {
+            width: 100%;
+            max-width: 1000px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 950px) {
+            body { overflow-y: auto; }
+            .game-layout { flex-direction: column; gap: 25px; }
+            .side-panel { width: auto; }
+        }
     </style>
-  </head>
-  <body class="web">
+</head>
+<body>
 
     <h1>ICE Defense: Minneapolis</h1>
 
@@ -142,22 +137,14 @@
             <button class="btn" onclick="openControls()">Controls</button>
         </div>
         
-        <div id="sketch" class="web"></div>
+        <div class="iframe-container">
+            <iframe src="https://studio.code.org/projects/gamelab/qzqEbFqO-F6v8-2NzF-9Nj8-8zFbOFIF162O/embed?nosource"></iframe>
+        </div>
         
         <div class="side-panel">
             <button class="btn" onclick="location.reload();">Restart Game</button>
         </div>
     </div>
-
-    <div id="soft-buttons" style="display: none">
-      <button id="leftButton" disabled class="arrow"></button>
-      <button id="rightButton" disabled class="arrow"></button>
-      <button id="upButton" disabled class="arrow"></button>
-      <button id="downButton" disabled class="arrow"></button>
-    </div>
-    <div id="studio-dpad" style="display: none"></div>
-    <div id="studio-action1" style="display: none"></div>
-    <div id="studio-action2" style="display: none"></div>
 
     <div id="controlsModal" class="modal-overlay">
         <div class="modal-content">
@@ -175,12 +162,13 @@
             document.getElementById('controlsModal').style.display = 'none';
         }
 
-        // Catch directional inputs so the browser view doesn't jump during active gameplay
+        // Catch and disable window scrolling completely for keys used in the game
         window.addEventListener("keydown", function(e) {
             if(["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
                 e.preventDefault();
             }
         }, {passive: false});
     </script>
-  </body>
+
+</body>
 </html>
