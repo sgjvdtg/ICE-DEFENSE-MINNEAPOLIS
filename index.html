@@ -70,21 +70,22 @@
             transform: scale(1.05);
         }
 
-        /* Container locked strictly to your exact Code.org specs */
+/* Container locked strictly to the visible game area */
         .iframe-container {
             width: 440px;
-            height: 710px;
+            height: 712px; /* Set to the exact height of the game window */
             box-shadow: 0 0 25px rgba(255, 255, 0, 0.25);
             border-radius: 4px;
-            overflow: hidden;
+            overflow: hidden; /* This acts as the mask slicing off the overflow */
             background: #111;
             display: flex;
         }
 
-        /* Forces iframe to fill the container layout border perfectly */
+        /* Shifts the iframe downwards to hide the footer bar */
         .iframe-container iframe {
             width: 100%;
-            height: 757px; /* Keeps internal dimensions native so things don't warp */
+            height: 757px; /* Native iframe height */
+            margin-bottom: -45px; /* Pulls the bottom footer out of view */
             border: 0px;
         }
 
