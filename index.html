@@ -11,68 +11,54 @@
     <script src="p5.play.js"></script>
     <script src="code.js"></script>
     <style>
-      /* Main Canvas Game Window Positioning */
-      #sketch.web {
-        position: absolute !important;
-        top: 150px !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        width: 400px !important;
-        height: 565px !important;
-        box-shadow: 0 0 25px rgba(255, 255, 0, 0.25);
-        border-radius: 4px;
-        background-color: #111;
-        z-index: 1;
-      }
-
-      /* Desktop Layout System Setup */
-      .arcade-interface {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-color: #000000;
-        color: #FFFF00;
+      /* --- MANDATORY GAME LAB CANVAS OVERRIDES --- */
+      html, body {
+        background-color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        overflow: hidden !important;
+        position: static !important; /* Overrides Code.org's position:fixed bug */
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
         font-family: 'Arial Black', Gadget, sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        box-sizing: border-box;
-        overflow: hidden;
-        user-select: none;
-        -webkit-user-select: none;
-        z-index: 10;
-        pointer-events: none; /* Allows clicks to pass through to the game underneath */
+        color: #FFFF00;
       }
 
-      /* Arcade Header Title */
-      .arcade-interface h1 {
+      /* Game Title Header */
+      h1 {
         font-size: 2.5rem;
         margin-top: 30px;
-        margin-bottom: 0;
+        margin-bottom: 20px;
         text-align: center;
         text-transform: uppercase;
         letter-spacing: 1px;
-        pointer-events: auto;
+        z-index: 10;
       }
 
-      /* Button Wrapper Layout */
-      .arcade-row {
-        position: absolute;
-        top: 410px; /* Aligns side buttons with the center height of the game canvas */
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 100%;
-        max-width: 1000px;
+      /* Horizontal Flex Row wrapping everything */
+      .game-layout {
         display: flex;
-        justify-content: space-between;
-        box-sizing: border-box;
-        padding: 0 20px;
+        align-items: center;
+        justify-content: center;
+        gap: 50px;
+        width: 100%;
+        max-width: 1100px;
+        z-index: 10;
       }
 
-      /* Custom Neon Yellow Control Buttons */
+      /* Side columns holding your buttons stable */
+      .side-panel {
+        width: 220px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Neon Yellow Arcade Buttons */
       .btn {
         background-color: #FFFF00;
         color: #000000;
@@ -85,7 +71,6 @@
         transition: transform 0.1s ease, background-color 0.2s ease;
         white-space: nowrap;
         box-shadow: 0 4px 10px rgba(255, 255, 0, 0.2);
-        pointer-events: auto; /* Makes sure buttons stay clickable */
       }
 
       .btn:hover {
@@ -93,22 +78,35 @@
         transform: scale(1.05);
       }
 
-      /* --- CONTROLS OVERLAY SCREEN --- */
+      /* Native Game Sketch Container Wrapper */
+      #sketch.web {
+        display: block !important;
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        transform: none !important;
+        width: 400px !important;
+        height: 565px !important;
+        box-shadow: 0 0 25px rgba(255, 255, 0, 0.25);
+        border-radius: 4px;
+        background-color: #111 !important;
+      }
+
+      /* --- CONTROLS OVERLAY POPUP MODAL --- */
       .modal-overlay {
         display: none;
         position: fixed;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
+        width: 100vw;
+        height: 100vh;
         background-color: rgba(0, 0, 0, 0.95);
-        z-index: 2000; /* Sits completely on top of everything else */
+        z-index: 2000;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         padding: 20px;
         box-sizing: border-box;
-        pointer-events: auto;
       }
 
       .modal-content {
@@ -127,21 +125,26 @@
         box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
       }
 
-      /* Hidden backend layouts required by the local Code.org game loop */
-      body.expo { background-color: black; }
-      #sketch.expo.no-controls { top: 82px; }
+      /* Mobile Stacking Safe Fallback */
+      @media (max-width: 950px) {
+        html, body { overflow-y: auto !important; }
+        .game-layout { flex-direction: column; gap: 25px; }
+        .side-panel { width: auto; }
+      }
     </style>
   </head>
   <body class="web">
 
-    <div id="sketch" class="web"></div>
+    <h1>ICE Defense: Minneapolis</h1>
 
-    <div class="arcade-interface">
-        <h1>ICE Defense: Minneapolis</h1>
-        
-        <div class="arcade-row">
+    <div class="game-layout">
+        <div class="side-panel">
             <button class="btn" onclick="openControls()">Controls</button>
-            
+        </div>
+        
+        <div id="sketch" class="web"></div>
+        
+        <div class="side-panel">
             <button class="btn" onclick="location.reload();">Restart Game</button>
         </div>
     </div>
@@ -172,7 +175,7 @@
             document.getElementById('controlsModal').style.display = 'none';
         }
 
-        // Locks the desktop window from jumping when directional items are pressed
+        // Catch directional inputs so the browser view doesn't jump during active gameplay
         window.addEventListener("keydown", function(e) {
             if(["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
                 e.preventDefault();
