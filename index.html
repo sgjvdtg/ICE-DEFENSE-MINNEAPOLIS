@@ -1,143 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
     <title>ICE Defense: Minneapolis</title>
-    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
     <script src="gamelab-api.js"></script>
     <link href="gamelab.css" rel="stylesheet" type="text/css">
     <script src="p5.js"></script>
     <script src="p5.play.js"></script>
     <script src="code.js"></script>
-
+    
     <style>
-        /* Base page layout styling */
-        body {
-            background-color: #000000;
-            color: #FFFF00; /* Neon Yellow */
-            font-family: 'Arial Black', Gadget, sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
-            box-sizing: border-box;
-            overflow: hidden; /* Prevents browser scroll bounces */
-            user-select: none;
-            -webkit-user-select: none;
-        }
+      /* Main page background */
+      body {
+        background-color: #000000;
+        color: #FFFF00; /* Neon Yellow */
+        font-family: 'Arial Black', Gadget, sans-serif;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+        box-sizing: border-box;
+        overflow: hidden; /* Lock the desktop screen from scrolling */
+        user-select: none;
+        -webkit-user-select: none;
+      }
 
-        /* Title text styling */
-        h1 {
-            font-size: 2.5rem;
-            margin-top: 20px;
-            margin-bottom: 30px;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+      /* Game Header Title */
+      h1 {
+        font-size: 2.5rem;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
 
-        /* Layout wrapper keeping items perfectly centered horizontally */
-        .game-layout {
-            display: flex;
-            align-items: center; /* Drops buttons precisely to the vertical centerline of the game */
-            justify-content: center;
-            gap: 50px;
-            width: 100%;
-            max-width: 1200px;
-            margin-top: 10px;
-        }
+      /* Horizontal Row Layout */
+      .game-layout {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 50px;
+        width: 100%;
+        max-width: 1200px;
+      }
 
-        /* Side grid column layouts for structural balance */
-        .side-panel {
-            width: 220px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+      /* Keeps buttons centered in their structural rows */
+      .side-panel {
+        width: 220px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
 
-        /* Neon Yellow block buttons styling */
-        .btn {
-            background-color: #FFFF00;
-            color: #000000;
-            border: none;
-            padding: 14px 32px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: transform 0.1s ease, background-color 0.2s ease;
-            white-space: nowrap;
-            box-shadow: 0 4px 10px rgba(255, 255, 0, 0.1);
-        }
+      /* Custom Neon Yellow Arcade Buttons */
+      .btn {
+        background-color: #FFFF00;
+        color: #000000;
+        border: none;
+        padding: 14px 32px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        text-transform: uppercase;
+        transition: transform 0.1s ease, background-color 0.2s ease;
+        white-space: nowrap;
+        box-shadow: 0 4px 10px rgba(255, 255, 0, 0.1);
+      }
 
-        .btn:hover {
-            background-color: #e6e600;
-            transform: scale(1.05);
-        }
+      .btn:hover {
+        background-color: #e6e600;
+        transform: scale(1.05);
+      }
 
-        /* Container wrapping your native local game frame canvas */
-        .arcade-cabinet {
-            width: 400px;
-            height: 565px;
-            box-shadow: 0 0 25px rgba(255, 255, 0, 0.25);
-            border-radius: 4px;
-            overflow: hidden;
-            background: #111;
-            position: relative;
-        }
+      /* Custom cabinet wrapper holding the raw game script canvas */
+      .arcade-cabinet {
+        width: 400px;  /* Uses your game's native exported width */
+        height: 565px; /* Uses your game's native exported height */
+        box-shadow: 0 0 25px rgba(255, 255, 0, 0.25);
+        border-radius: 4px;
+        overflow: hidden;
+        background: #111;
+        position: relative;
+      }
 
-        /* Forces the canvas element inside the frame layout windows */
-        #sketch {
-            width: 100%;
-            height: 100%;
-        }
+      /* Forces Code.org canvas container to hold shapes inside the window boundary */
+      #sketch {
+        width: 100% !important;
+        height: 100% !important;
+        position: static !important;
+      }
 
-        /* --- CONTROLS OVERLAY SCREEN (MODAL) --- */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.95);
-            z-index: 1000;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
+      /* --- CONTROLS OVERLAY MODAL --- */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.95);
+        z-index: 1000;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        box-sizing: border-box;
+      }
 
-        .modal-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            max-width: 100%;
-        }
+      .modal-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        max-width: 100%;
+      }
 
-        .controls-image {
-            width: 100%;
-            max-width: 1000px;
-            height: auto;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-        }
+      .controls-image {
+        width: 100%;
+        max-width: 1000px;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+      }
 
-        @media (max-width: 950px) {
-            body { overflow-y: auto; }
-            .game-layout { flex-direction: column; gap: 25px; }
-            .side-panel { width: auto; }
-        }
+      /* Mobile responsiveness */
+      @media (max-width: 950px) {
+        body { overflow-y: auto; }
+        .game-layout { flex-direction: column; gap: 25px; }
+        .side-panel { width: auto; }
+      }
     </style>
-</head>
-<body class="web">
+  </head>
+  <body class="web">
 
     <h1>ICE Defense: Minneapolis</h1>
 
@@ -156,11 +156,14 @@
     </div>
 
     <div id="soft-buttons" style="display: none">
-        <button id="leftButton" disabled class="arrow"></button>
-        <button id="rightButton" disabled class="arrow"></button>
-        <button id="upButton" disabled class="arrow"></button>
-        <button id="downButton" disabled class="arrow"></button>
+      <button id="leftButton" disabled class="arrow"></button>
+      <button id="rightButton" disabled class="arrow"></button>
+      <button id="upButton" disabled class="arrow"></button>
+      <button id="downButton" disabled class="arrow"></button>
     </div>
+    <div id="studio-dpad" style="display: none"></div>
+    <div id="studio-action1" style="display: none"></div>
+    <div id="studio-action2" style="display: none"></div>
 
     <div id="controlsModal" class="modal-overlay">
         <div class="modal-content">
@@ -178,13 +181,12 @@
             document.getElementById('controlsModal').style.display = 'none';
         }
 
-        // Intercept arrow keys and spacebar scrolling loops completely 
+        // Intercept and trap keys so the web browser container doesn't jump during active inputs
         window.addEventListener("keydown", function(e) {
             if(["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
                 e.preventDefault();
             }
         }, {passive: false});
     </script>
-
-</body>
+  </body>
 </html>
