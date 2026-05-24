@@ -70,23 +70,21 @@
             transform: scale(1.05);
         }
 
-/* Container locked strictly to the visible game area */
+        /* Container locked strictly to your exact Code.org specs */
         .iframe-container {
             width: 440px;
-            height: 712px; /* Set to the exact height of the game window */
+            height: 700px;
             box-shadow: 0 0 25px rgba(255, 255, 0, 0.25);
             border-radius: 4px;
-            overflow: hidden; /* This acts as the mask slicing off the overflow */
+            overflow: hidden;
             background: #111;
             display: flex;
         }
 
-        /* Shifts the iframe downwards to hide the footer bar */
+        /* Forces iframe to fill the container layout border perfectly */
         .iframe-container iframe {
             width: 100%;
-            height: 757px; /* Native iframe height */
-            margin-bottom: -45px; /* Pulls the bottom footer out of view */
-            border: 0px;
+            height: 100%;
         }
 
         /* --- CONTROLS OVERLAY SCREEN (MODAL) --- */
@@ -147,7 +145,7 @@
         </div>
         
         <div class="iframe-container">
-            <iframe style="border: 0px;" src="https://studio.code.org/projects/gamelab/qzqEbFqO-F6v8-2NzF-9Nj8-8zFbOFIF162O/embed?nosource"></iframe>
+            <iframe style="border: 0px;" src="https://studio.code.org/projects/gamelab/qzqEbFqO-F6v8-2NzF-9Nj8-8zFbOFIF162O/embed_focused?nosource"></iframe>
         </div>
         
         <div class="side-panel">
