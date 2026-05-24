@@ -4,8 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ICE Defense: Minneapolis</title>
+    
+    <script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
+    <script src="gamelab-api.js"></script>
+    <link href="gamelab.css" rel="stylesheet" type="text/css">
+    <script src="p5.js"></script>
+    <script src="p5.play.js"></script>
+    <script src="code.js"></script>
+
     <style>
- /* Base page styling */
+        /* Base page layout styling */
         body {
             background-color: #000000;
             color: #FFFF00; /* Neon Yellow */
@@ -15,13 +23,15 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; 
+            justify-content: flex-start;
             min-height: 100vh;
             box-sizing: border-box;
-            overflow: hidden; /* Prevents the main page from scrolling completely */
+            overflow: hidden; /* Prevents browser scroll bounces */
+            user-select: none;
+            -webkit-user-select: none;
         }
 
-        /* Title styling */
+        /* Title text styling */
         h1 {
             font-size: 2.5rem;
             margin-top: 20px;
@@ -31,26 +41,26 @@
             letter-spacing: 1px;
         }
 
-        /* Layout wrapper - holds the entire row together */
+        /* Layout wrapper keeping items perfectly centered horizontally */
         .game-layout {
             display: flex;
-            align-items: center; 
+            align-items: center; /* Drops buttons precisely to the vertical centerline of the game */
             justify-content: center;
             gap: 50px;
             width: 100%;
             max-width: 1200px;
-            margin-top: 10px; 
+            margin-top: 10px;
         }
 
-        /* Side columns for the buttons */
+        /* Side grid column layouts for structural balance */
         .side-panel {
-            width: 220px; 
+            width: 220px;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        /* Button styling matching the neon yellow block look */
+        /* Neon Yellow block buttons styling */
         .btn {
             background-color: #FFFF00;
             color: #000000;
@@ -61,7 +71,7 @@
             cursor: pointer;
             text-transform: uppercase;
             transition: transform 0.1s ease, background-color 0.2s ease;
-            white-space: nowrap; 
+            white-space: nowrap;
             box-shadow: 0 4px 10px rgba(255, 255, 0, 0.1);
         }
 
@@ -70,26 +80,21 @@
             transform: scale(1.05);
         }
 
-  /* Container holds the iframe naturally without breaking its width */
-        .iframe-container {
-            width: 440px;
-            height: 712px; /* Set to the exact height of the game window */
+        /* Container wrapping your native local game frame canvas */
+        .arcade-cabinet {
+            width: 400px;
+            height: 565px;
             box-shadow: 0 0 25px rgba(255, 255, 0, 0.25);
             border-radius: 4px;
-            background: #111;
-            display: flex;
             overflow: hidden;
+            background: #111;
+            position: relative;
         }
 
-        /* Uses a clip-path mask to slice off the bottom gray bar */
-        .iframe-container iframe {
-            width: 440px;
-            height: 757px; /* Native Code.org height */
-            border: 0px;
-            
-            /* Slices the frame from top-left (0 0) to bottom-right (100% 712px) */
-            clip-path: inset(0px 0px 45px 0px); 
-            margin-bottom: -45px; /* Pulls up the blank space left behind */
+        /* Forces the canvas element inside the frame layout windows */
+        #sketch {
+            width: 100%;
+            height: 100%;
         }
 
         /* --- CONTROLS OVERLAY SCREEN (MODAL) --- */
@@ -132,7 +137,7 @@
         }
     </style>
 </head>
-<body>
+<body class="web">
 
     <h1>ICE Defense: Minneapolis</h1>
 
@@ -141,13 +146,20 @@
             <button class="btn" onclick="openControls()">Controls</button>
         </div>
         
-        <div class="iframe-container">
-            <iframe style="border: 0px;" src="https://studio.code.org/projects/gamelab/qzqEbFqO-F6v8-2NzF-9Nj8-8zFbOFIF162O/embed?nosource"></iframe>
+        <div class="arcade-cabinet">
+            <div id="sketch" class="web"></div>
         </div>
         
         <div class="side-panel">
             <button class="btn" onclick="location.reload();">Restart Game</button>
         </div>
+    </div>
+
+    <div id="soft-buttons" style="display: none">
+        <button id="leftButton" disabled class="arrow"></button>
+        <button id="rightButton" disabled class="arrow"></button>
+        <button id="upButton" disabled class="arrow"></button>
+        <button id="downButton" disabled class="arrow"></button>
     </div>
 
     <div id="controlsModal" class="modal-overlay">
@@ -166,7 +178,7 @@
             document.getElementById('controlsModal').style.display = 'none';
         }
 
-        // Catch and disable window scrolling completely for keys used in the game
+        // Intercept arrow keys and spacebar scrolling loops completely 
         window.addEventListener("keydown", function(e) {
             if(["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
                 e.preventDefault();
