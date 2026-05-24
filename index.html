@@ -70,25 +70,26 @@
             transform: scale(1.05);
         }
 
-        /* Container acts as a strict window frame */
+  /* Container holds the iframe naturally without breaking its width */
         .iframe-container {
             width: 440px;
-            height: 710px; /* Shortened to hide the footer */
+            height: 712px; /* Set to the exact height of the game window */
             box-shadow: 0 0 25px rgba(255, 255, 0, 0.25);
             border-radius: 4px;
-            overflow: hidden; /* Cuts off anything pushing past the 710px height */
             background: #111;
-            position: relative; /* Allows child items to position absolutely */
+            display: flex;
+            overflow: hidden;
         }
 
-        /* Forces iframe to size correctly and offsets it slightly */
+        /* Uses a clip-path mask to slice off the bottom gray bar */
         .iframe-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 440px;
-            height: 757px; /* Native frame size */
+            height: 757px; /* Native Code.org height */
             border: 0px;
+            
+            /* Slices the frame from top-left (0 0) to bottom-right (100% 712px) */
+            clip-path: inset(0px 0px 45px 0px); 
+            margin-bottom: -45px; /* Pulls up the blank space left behind */
         }
 
         /* --- CONTROLS OVERLAY SCREEN (MODAL) --- */
