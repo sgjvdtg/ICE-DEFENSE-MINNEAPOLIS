@@ -73,7 +73,7 @@
         /* Container locked strictly to your exact Code.org specs */
         .iframe-container {
             width: 440px;
-            height: 757px;
+            height: 710px;
             box-shadow: 0 0 25px rgba(255, 255, 0, 0.25);
             border-radius: 4px;
             overflow: hidden;
@@ -84,7 +84,8 @@
         /* Forces iframe to fill the container layout border perfectly */
         .iframe-container iframe {
             width: 100%;
-            height: 100%;
+            height: 757px; /* Keeps internal dimensions native so things don't warp */
+            border: 0px;
         }
 
         /* --- CONTROLS OVERLAY SCREEN (MODAL) --- */
