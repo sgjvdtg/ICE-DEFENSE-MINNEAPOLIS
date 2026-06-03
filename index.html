@@ -70,7 +70,7 @@
             transform: scale(1.05);
         }
 
-/* Container acts as the rigid cropping window */
+        /* Container acts as the rigid cropping window */
         .iframe-container {
             width: 440px;
             height: 443px; /* This cleanly cuts off right below 'Tap or click to run' */
@@ -94,6 +94,28 @@
             /* Shifts the entire frame down slightly, pushing the gray footer out of the crop zone */
             transform: translateY(0px); 
             margin-bottom: -45px;
+        }
+
+        /* --- VIEW COUNTERS STYLING --- */
+        .view-counter-container {
+            display: flex;
+            flex-direction: row;
+            gap: 60px; /* Space between the two counters */
+            margin-top: 30px;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .view-counter {
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            color: #FFFF00;
+        }
+
+        .view-counter p {
+            margin-bottom: 10px;
+            margin-top: 0;
         }
 
         /* --- CONTROLS OVERLAY SCREEN (MODAL) --- */
@@ -133,6 +155,7 @@
             body { overflow-y: auto; }
             .game-layout { flex-direction: column; gap: 25px; }
             .side-panel { width: auto; }
+            .view-counter-container { flex-direction: column; gap: 30px; } /* Stacks the counters on small screens */
         }
     </style>
 </head>
@@ -152,6 +175,21 @@
         <div class="side-panel">
             <button class="btn" onclick="location.reload();">Restart Game</button>
         </div>
+    </div>
+
+    <div class="view-counter-container">
+        
+        <div class="view-counter">
+            <p>PLAYERS ONLINE NOW:</p>
+            <script id="_wauots">var _wau = _wau || []; _wau.push(["classic", "icedefense", "ots"]);</script>
+            <script async src="//waust.at/c.js"></script>
+        </div>
+
+        <div class="view-counter">
+            <p>TOTAL ARCADE PLAYS:</p>
+            <img src="https://hitwebcounter.com/counter/counter.php?page=1234567&style=0006&nbdigits=5&type=page&initCount=0" title="Free Counter" Alt="web counter" border="0" />
+        </div>
+
     </div>
 
     <div id="controlsModal" class="modal-overlay">
