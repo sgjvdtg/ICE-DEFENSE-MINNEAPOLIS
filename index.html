@@ -73,10 +73,10 @@
         /* Container acts as the rigid cropping window */
         .iframe-container {
             width: 440px;
-            height: 443px; /* This cleanly cuts off right below 'Tap or click to run' */
+            height: 443px; 
             box-shadow: 0 0 25px rgba(255, 255, 0, 0.25);
             border-radius: 4px;
-            overflow: hidden; /* Slices off everything that overflows past 712px */
+            overflow: hidden; 
             background: #111;
             display: flex;
             position: relative;
@@ -85,13 +85,11 @@
         /* Forces the iframe to render at full scale, but shifts it to hide the footer */
         .iframe-container iframe {
             width: 440px;
-            height: 443px; /* Keep native height so Code.org doesn't warp the game scales */
+            height: 443px; 
             border: 0px;
             position: absolute;
             top: 0;
             left: 0;
-            
-            /* Shifts the entire frame down slightly, pushing the gray footer out of the crop zone */
             transform: translateY(0px); 
             margin-bottom: -45px;
         }
@@ -100,7 +98,7 @@
         .view-counter-container {
             display: flex;
             flex-direction: row;
-            gap: 60px; /* Space between the two counters */
+            gap: 60px;
             margin-top: 30px;
             align-items: center;
             justify-content: center;
@@ -155,7 +153,7 @@
             body { overflow-y: auto; }
             .game-layout { flex-direction: column; gap: 25px; }
             .side-panel { width: auto; }
-            .view-counter-container { flex-direction: column; gap: 30px; } /* Stacks the counters on small screens */
+            .view-counter-container { flex-direction: column; gap: 30px; } 
         }
     </style>
 </head>
@@ -184,13 +182,6 @@
             <script id="_wauots">var _wau = _wau || []; _wau.push(["classic", "icedefense", "ots"]);</script>
             <script async src="//waust.at/c.js"></script>
         </div>
-
-        <div class="view-counter">
-            <p>TOTAL ARCADE PLAYS:</p>
-            <a href="https://www.hitwebcounter.com/" target="_blank" rel="noopener" title="www.hitwebcounter.com/">
-            <img src="https://www.hitwebcounter.com/counter/counter.php?page=21501753&amp;style=0018&amp;nbdigits=5&amp;type=page" alt="www.hitwebcounter.com/" decoding="async" style="border:0;max-width:100%;height:auto;" />
-            </a>
-            </div>
 
     </div>
 
