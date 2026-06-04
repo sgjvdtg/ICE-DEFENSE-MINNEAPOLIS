@@ -75,10 +75,10 @@
         /* Container acts as the rigid cropping window */
         .iframe-container {
             width: 440px;
-            height: 443px; /* This cleanly cuts off right below 'Tap or click to run' */
+            height: 443px; /* This cleanly cuts off right below 'Tap or click to run' in standard view */
             box-shadow: 0 0 25px rgba(255, 255, 0, 0.25);
             border-radius: 4px;
-            overflow: hidden; /* Slices off everything that overflows past 712px */
+            overflow: hidden; /* Slices off everything that overflows */
             background: #111;
             display: flex;
             position: relative;
@@ -97,8 +97,8 @@
             transition: all 0.1s ease;
         }
 
-        /* --- OPTION 2: FULLSCREEN GAME STYLING --- */
-        /* This triggers automatically via JavaScript when the container goes fullscreen */
+        /* --- OPTION 2: FULLSCREEN GAME STYLING FIX --- */
+        /* Triggers automatically via JavaScript when the container goes fullscreen */
         .iframe-container:fullscreen {
             width: 100vw !important;
             height: 100vh !important;
@@ -110,14 +110,21 @@
             box-shadow: none;
         }
 
-        /* Scales up the game frame beautifully to fit the height of the monitor without stretching width distorting graphics */
         .iframe-container:fullscreen iframe {
-            width: 100vh !important;
-            height: 100vh !important;
-            max-width: 100vw !important;
-            position: static !important;
+            /* 100vmin ensures the game scales safely without horizontal or vertical stretching */
+            width: 100vmin !important;
+            height: 110vmin !important; /* Adds proportional height to contain the footer */
+            max-width: none !important;
+            position: relative !important;
+            
+            /* Slices exactly 10% off the bottom to hide the Code.org footer seamlessly */
+            clip-path: inset(0 0 10% 0) !important;
+            
+            /* Pulls the iframe up slightly so the VISIBLE game block is perfectly centered */
+            margin-bottom: -10vmin !important; 
             transform: none !important;
-            margin-bottom: 0 !important;
+            top: auto !important;
+            left: auto !important;
         }
 
         /* --- VIEW COUNTER STYLING --- */
