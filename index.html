@@ -6,95 +6,121 @@
 <title>ICE Defense: Minneapolis</title>
 
 <style>
-    body {
-        background-color: #000;
-        color: #FFFF00;
-        font-family: Arial Black, Gadget, sans-serif;
-        margin: 0;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        min-height: 100vh;
-    }
+body {
+    background-color: #000;
+    color: #FFFF00;
+    font-family: Arial Black, Gadget, sans-serif;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
 
-    h1 {
-        font-size: 2.5rem;
-        margin: 20px 0;
-        text-transform: uppercase;
-    }
+h1 {
+    font-size: 2.5rem;
+    margin: 20px 0;
+    text-transform: uppercase;
+    text-align: center;
+}
 
+.game-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    width: 100%;
+}
+
+.side-panel {
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.btn {
+    background-color: #FFFF00;
+    color: #000;
+    border: none;
+    padding: 14px 32px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.iframe-container {
+    width: 800px;
+    height: 600px;
+    background: #000;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 25px rgba(255,255,0,.25);
+}
+
+.iframe-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.iframe-container:fullscreen {
+    width: 100vw;
+    height: 100vh;
+}
+
+.iframe-container:fullscreen iframe {
+    width: 100%;
+    height: 100%;
+}
+
+.view-counter-container {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.95);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    text-align: center;
+}
+
+.modal-content img {
+    max-width: 90%;
+    height: auto;
+}
+
+@media (max-width: 1200px) {
     .game-layout {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 50px;
-        width: 100%;
+        flex-direction: column;
     }
 
     .side-panel {
-        width: 220px;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .btn {
-        background-color: #FFFF00;
-        color: #000;
-        border: none;
-        padding: 14px 32px;
-        font-size: 1rem;
-        font-weight: bold;
-        cursor: pointer;
-        text-transform: uppercase;
+        width: auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .iframe-container {
-        width: 440px;
-        height: 443px;
-        background: #000;
-        overflow: hidden;
-        position: relative;
-        box-shadow: 0 0 25px rgba(255,255,0,.25);
+        width: 95vw;
+        height: 75vh;
     }
-
-    .iframe-container iframe {
-        width: 100%;
-        height: 100%;
-        border: 0;
-    }
-
-    /* FULLSCREEN */
-    .iframe-container:fullscreen {
-        width: 100vw;
-        height: 100vh;
-        background: #000;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .iframe-container:fullscreen iframe {
-        width: 100%;
-        height: 100%;
-        border: 0;
-    }
-
-    .view-counter-container {
-        margin-top: 30px;
-        text-align: center;
-    }
-
-    .modal-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,.95);
-        z-index: 1000;
-        justify-content: center;
-        align-items: center;
-    }
+}
 </style>
 </head>
 
@@ -111,69 +137,69 @@
 
     <div class="iframe-container" id="gameContainer">
         <iframe
-            src="https://studio.code.org/projects/gamelab/qzqEbFqO-F6v8-2NzF-9Nj8-8zFbOFIF162O/embed?nosource"
+            id="gameFrame"
+            src="https://sgjvdtg.github.io/game/"
             allowfullscreen>
         </iframe>
     </div>
 
     <div class="side-panel">
-        <button class="btn" onclick="location.reload()">Restart Game</button>
+        <button class="btn" onclick="restartGame()">Restart Game</button>
     </div>
 
 </div>
 
 <div class="view-counter-container">
     <p>PLAYERS ONLINE NOW:</p>
+
     <script>
         var _wau = _wau || [];
         _wau.push(["classic", "icedefense", "ots"]);
     </script>
+
     <script async src="//waust.at/c.js"></script>
 </div>
 
 <div id="controlsModal" class="modal-overlay">
-    <div style="text-align:center;">
-        <img src="controlPage.gif" style="max-width:90%; height:auto;">
+    <div class="modal-content">
+        <img src="controlPage.gif" alt="Controls">
         <br><br>
         <button class="btn" onclick="closeControls()">Back</button>
     </div>
 </div>
 
 <script>
-    function openControls() {
-        document.getElementById("controlsModal").style.display = "flex";
+function openControls() {
+    document.getElementById("controlsModal").style.display = "flex";
+}
+
+function closeControls() {
+    document.getElementById("controlsModal").style.display = "none";
+}
+
+function toggleGameFullscreen() {
+    const game = document.getElementById("gameContainer");
+
+    if (!document.fullscreenElement) {
+        game.requestFullscreen();
+    } else {
+        document.exitFullscreen();
     }
+}
 
-    function closeControls() {
-        document.getElementById("controlsModal").style.display = "none";
+function restartGame() {
+    const frame = document.getElementById("gameFrame");
+    frame.src = frame.src;
+}
+
+window.addEventListener("keydown", function(e) {
+    if (
+        ["Space","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"]
+        .includes(e.code)
+    ) {
+        e.preventDefault();
     }
-
-    async function toggleGameFullscreen() {
-        const game = document.getElementById("gameContainer");
-
-        try {
-            if (!document.fullscreenElement) {
-                await game.requestFullscreen();
-            } else {
-                await document.exitFullscreen();
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    window.addEventListener(
-        "keydown",
-        function(e) {
-            if (
-                ["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"]
-                .includes(e.code)
-            ) {
-                e.preventDefault();
-            }
-        },
-        { passive: false }
-    );
+}, { passive: false });
 </script>
 
 </body>
