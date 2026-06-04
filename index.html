@@ -5,54 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ICE Defense: Minneapolis</title>
     <style>
-        /* Base page styling */
         body {
             background-color: #000000;
-            color: #FFFF00; /* Neon Yellow */
+            color: #FFFF00;
             font-family: 'Arial Black', Gadget, sans-serif;
             margin: 0;
             padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; 
             min-height: 100vh;
-            box-sizing: border-box;
-            overflow: hidden; /* Prevents the main page from scrolling completely */
         }
 
-        /* Title styling */
-        h1 {
-            font-size: 2.5rem;
-            margin-top: 20px;
-            margin-bottom: 30px;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        h1 { font-size: 2.5rem; margin: 20px 0; text-transform: uppercase; }
 
-        /* Layout wrapper - holds the entire row together */
         .game-layout {
             display: flex;
-            align-items: center; 
+            align-items: center;
             justify-content: center;
             gap: 50px;
             width: 100%;
-            max-width: 1200px;
-            margin-top: 10px; 
         }
 
-        /* Side columns for the buttons */
-        .side-panel {
-            width: 220px; 
-            display: flex;
-            flex-direction: column;
-            gap: 15px; /* Puts clean spacing between stacked buttons */
-            justify-content: center;
-            align-items: center;
-        }
+        .side-panel { width: 220px; display: flex; flex-direction: column; gap: 15px; }
 
-        /* Button styling matching the neon yellow block look */
         .btn {
             background-color: #FFFF00;
             color: #000000;
@@ -62,131 +38,51 @@
             font-weight: bold;
             cursor: pointer;
             text-transform: uppercase;
-            transition: transform 0.1s ease, background-color 0.2s ease;
-            white-space: nowrap; 
-            box-shadow: 0 4px 10px rgba(255, 255, 0, 0.1);
         }
 
-        .btn:hover {
-            background-color: #e6e600;
-            transform: scale(1.05);
-        }
-
-        /* Container acts as the rigid cropping window */
+        /* The Container Setup */
         .iframe-container {
             width: 440px;
-            height: 443px; /* This cleanly cuts off right below 'Tap or click to run' in standard view */
+            height: 443px;
             box-shadow: 0 0 25px rgba(255, 255, 0, 0.25);
-            border-radius: 4px;
-            overflow: hidden; /* Slices off everything that overflows */
-            background: #111;
-            display: flex;
+            background: #000;
+            overflow: hidden;
             position: relative;
         }
 
-        /* Forces the iframe to render at full scale, but shifts it to hide the footer */
         .iframe-container iframe {
             width: 440px;
-            height: 443px; /* Keep native height so Code.org doesn't warp the game scales */
-            border: 0px;
-            position: absolute;
-            top: 0;
-            left: 0;
-            transform: translateY(0px); 
-            margin-bottom: -45px;
-            transition: all 0.1s ease;
+            height: 443px;
+            border: 0;
         }
 
-        /* --- OPTION 2: FULLSCREEN GAME STYLING FIX --- */
-        /* Triggers automatically via JavaScript when the container goes fullscreen */
+        /* --- FULLSCREEN OPTIMIZED MODE --- */
         .iframe-container:fullscreen {
-            width: 100vw !important;
-            height: 100vh !important;
-            background-color: #000000 !important;
             display: flex !important;
             justify-content: center !important;
             align-items: center !important;
-            border-radius: 0;
-            box-shadow: none;
+            background: #000 !important;
         }
 
         .iframe-container:fullscreen iframe {
-            /* 100vmin ensures the game scales safely without horizontal or vertical stretching */
-            width: 100vmin !important;
-            height: 110vmin !important; /* Adds proportional height to contain the footer */
-            max-width: none !important;
-            position: relative !important;
-            
-            /* Slices exactly 10% off the bottom to hide the Code.org footer seamlessly */
-            clip-path: inset(0 0 10% 0) !important;
-            
-            /* Pulls the iframe up slightly so the VISIBLE game block is perfectly centered */
-            margin-bottom: -10vmin !important; 
-            transform: none !important;
-            top: auto !important;
-            left: auto !important;
+            /* Locks aspect ratio to square */
+            width: 100vh !important;
+            height: 100vh !important;
+            /* Crops the footer/top bars */
+            clip-path: inset(5% 0 10% 0) !important;
         }
 
-        /* --- VIEW COUNTER STYLING --- */
-        .view-counter-container {
-            display: flex;
-            flex-direction: row;
-            gap: 60px;
-            margin-top: 30px;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
+        .view-counter-container { margin-top: 30px; text-align: center; }
 
-        .view-counter {
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            color: #FFFF00;
-        }
-
-        .view-counter p {
-            margin-bottom: 10px;
-            margin-top: 0;
-        }
-
-        /* --- CONTROLS OVERLAY SCREEN (MODAL) --- */
         .modal-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.95);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.95);
             z-index: 1000;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .modal-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            max-width: 100%;
-        }
-
-        .controls-image {
-            width: 100%;
-            max-width: 1000px;
-            height: auto;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-        }
-
-        @media (max-width: 950px) {
-            body { overflow-y: auto; }
-            .game-layout { flex-direction: column; gap: 25px; }
-            .side-panel { width: auto; flex-direction: row; }
-            .view-counter-container { flex-direction: column; gap: 30px; } 
         }
     </style>
 </head>
@@ -210,48 +106,34 @@
     </div>
 
     <div class="view-counter-container">
-        <div class="view-counter">
-            <p>PLAYERS ONLINE NOW:</p>
-            <script id="_wauots">var _wau = _wau || []; _wau.push(["classic", "icedefense", "ots"]);</script>
-            <script async src="//waust.at/c.js"></script>
-        </div>
+        <p>PLAYERS ONLINE NOW:</p>
+        <script id="_wauots">var _wau = _wau || []; _wau.push(["classic", "icedefense", "ots"]);</script>
+        <script async src="//waust.at/c.js"></script>
     </div>
 
     <div id="controlsModal" class="modal-overlay">
-        <div class="modal-content">
-            <img src="controlPage.gif" alt="Game Controls" class="controls-image">
-            <button class="btn" onclick="closeControls()">Back To Game</button>
+        <div style="text-align:center;">
+            <img src="controlPage.gif" style="max-width:90%; height:auto;">
+            <br><button class="btn" onclick="closeControls()">Back</button>
         </div>
     </div>
 
     <script>
-        function openControls() {
-            document.getElementById('controlsModal').style.display = 'flex';
-        }
+        function openControls() { document.getElementById('controlsModal').style.display = 'flex'; }
+        function closeControls() { document.getElementById('controlsModal').style.display = 'none'; }
 
-        function closeControls() {
-            document.getElementById('controlsModal').style.display = 'none';
-        }
-
-        // FULLSCREEN FUNCTION (Targeting just the game frame container)
         function toggleGameFullscreen() {
-            let container = document.getElementById('gameContainer');
+            let elem = document.getElementById("gameContainer");
             if (!document.fullscreenElement) {
-                container.requestFullscreen().catch(err => {
-                    alert(`Error enabling fullscreen: ${err.message}`);
-                });
+                elem.requestFullscreen().catch(err => alert(err.message));
             } else {
                 document.exitFullscreen();
             }
         }
 
-        // Catch and disable window scrolling completely for keys used in the game
-        window.addEventListener("keydown", function(e) {
-            if(["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
-                e.preventDefault();
-            }
+        window.addEventListener("keydown", e => {
+            if(["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) e.preventDefault();
         }, {passive: false});
     </script>
-
 </body>
 </html>
