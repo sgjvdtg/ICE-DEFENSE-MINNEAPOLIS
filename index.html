@@ -68,7 +68,7 @@ h1 {
     border: none;
 }
 
-/* FIX: Flexbox applied to center the fullscreen content */
+/* Container becomes a flexible box to center the game */
 .iframe-container:fullscreen {
     width: 100vw;
     height: 100vh;
@@ -78,12 +78,11 @@ h1 {
     background-color: #000;
 }
 
-/* FIX: Forces the iframe to stay square and scale nicely without hugging the top left */
+/* Iframe becomes the largest possible perfect square */
 .iframe-container:fullscreen iframe {
     width: 100vmin; 
     height: 100vmin;
-    max-width: 100%;
-    max-height: 100%;
+    border: none;
 }
 
 .view-counter-container {
